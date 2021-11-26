@@ -18,10 +18,11 @@ local: requirements
 	uvicorn app.main:app --reload
 
 down:
-	docker-compose -f docker-compose.yml -f docker-compose.dev.yml down
+	docker-compose -f docker-compose.yml -f docker-compose.dev.yml down -v
 
-dev: down
+dev:
 	docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
+	docker logs $(BACKEND_CONTAINER_NAME) -f
 
 log-backend:
 	docker logs $(BACKEND_CONTAINER_NAME) -f

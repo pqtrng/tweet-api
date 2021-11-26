@@ -8,3 +8,4 @@ Procfile
 nginx
 gunicorn.service
 .vscode/
+__pycache__/

@@ -1,4 +1,5 @@
 from fastapi import Response, status, HTTPException, Depends, APIRouter
+from fastapi_sqlalchemy import db
 
 from sqlalchemy.orm import Session
 from sqlalchemy import func
@@ -13,13 +14,12 @@ router = APIRouter(prefix="/tweets", tags=["Tweets"])
 
 @router.get("", response_model=List[schemas.TweetBase])
 def get_tweets(
-    db: Session = Depends(get_db),
     limit: int = 10,
     skip: int = 0,
     search: Optional[str] = "",
 ):
     tweets = (
-        db.query(models.Tweet)
+        db.session.query(models.Tweet)
         .group_by(models.Tweet.id)
         .filter(models.Tweet.title.contains(search))
         .limit(limit=limit)
