@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  backend:
+    build: .
+    env_file:
+      - ./.env
+    volumes:
+      - ./app:/usr/src/app:ro
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - 8000:8000
+  database:
+    env_file:
+      - ./.env

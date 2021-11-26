@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  backend:
+    container_name: backend-tweet
+    depends_on:
+      - database
+  database:
+    container_name: backend-database
+    image: postgres
+    volumes:
+      - postgres-db:/var/lib/postgresql/data  
+volumes:
+  postgres-db:
