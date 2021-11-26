@@ -6,7 +6,7 @@ services:
     depends_on:
       - database
   database:
-    container_name: backend-database
+    container_name: database-tweet
     image: postgres
     volumes:
       - postgres-db:/var/lib/postgresql/data  
