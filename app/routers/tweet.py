@@ -5,9 +5,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 
 from typing import List, Optional
-
 from .. import models, schemas
-from ..database import get_db
 
 router = APIRouter(prefix="/tweets", tags=["Tweets"])
 
@@ -28,3 +26,15 @@ def get_tweets(
     )
 
     return tweets
+
+
+@router.get("/{id}", response_model=schemas.TweetBase)
+def get_tweets(id: int):
+    tweet = db.session.query(models.Tweet).filter(models.Tweet.id == id).first()
+    if not tweet:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Tweet with id: {id} was not found.",
+        )
+    print(tweet)
+    return tweet

@@ -9,6 +9,9 @@ class TweetBase(BaseModel):
     content: str
     published: bool = True
 
+    class Config:
+        orm_mode = True
+
 
 class TweetCreate(TweetBase):
     pass
