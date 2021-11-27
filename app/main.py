@@ -1,12 +1,7 @@
 from fastapi import FastAPI
-from . import models
-from .database import engine
 from .routers import tweet
 from fastapi_sqlalchemy import DBSessionMiddleware
 from .config import settings
-
-# Connect to database
-# models.Base.metadata.create_all(bind=engine)
 
 # App
 app = FastAPI()
