@@ -72,3 +72,21 @@ def update_tweet(
     db.session.commit()
 
     return tweet_query.first()
+
+
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_tweet(id: int):
+    tweet_query = db.session.query(models.Tweet).filter(models.Tweet.id == id)
+
+    # Check if the tweet exist
+    if not tweet_query.first():
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Tweet with id: {id} does not exist.",
+        )
+
+    # Execute the action
+    tweet_query.delete(synchronize_session=False)
+    db.session.commit()
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
