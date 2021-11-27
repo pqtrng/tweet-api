@@ -1,11 +1,15 @@
-FROM python:3.8.10
+FROM python:3.10.0
+
+ENV PYTHONUNBUFFERED=1
 
 WORKDIR /usr/src/app
 
 COPY requirements.txt .
 
+RUN pip install --upgrade pip
+
 RUN pip install -r requirements.txt --no-cache-dir
 
 COPY . .
 
-CMD [ "uvicorn", "app.main:app", "0.0.0.0", "--port", "8000" ]
+EXPOSE 8000

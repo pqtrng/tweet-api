@@ -20,11 +20,15 @@ local: requirements
 down:
 	docker-compose -f docker-compose.yml -f docker-compose.dev.yml down
 
-dev: down
-	docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
+down-v:
+	docker-compose -f docker-compose.yml -f docker-compose.dev.yml down -v
 
-log-backend:
+dev:
+	docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
 	docker logs $(BACKEND_CONTAINER_NAME) -f
 
-bash-backend:
+log:
+	docker logs $(BACKEND_CONTAINER_NAME) -f
+
+bash:
 	docker exec -it $(BACKEND_CONTAINER_NAME) bash 
