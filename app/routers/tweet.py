@@ -51,3 +51,24 @@ def create_tweet(
     db.session.commit()
     db.session.refresh(new_tweet)
     return new_tweet
+
+
+@router.put("/{id}", response_model=schemas.TweetCreate)
+def update_tweet(
+    id: int,
+    tweet: schemas.TweetCreate,
+):
+    tweet_query = db.session.query(models.Tweet).filter(models.Tweet.id == id)
+
+    # Check if the tweet exist
+    if not tweet_query.first():
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Post with id: {id} does not exist.",
+        )
+
+    # Execute the action
+    tweet_query.update(values=tweet.dict(), synchronize_session=False)
+    db.session.commit()
+
+    return tweet_query.first()
