@@ -38,3 +38,16 @@ def get_tweets(id: int):
         )
     print(tweet)
     return tweet
+
+
+@router.post(
+    "", status_code=status.HTTP_201_CREATED, response_model=schemas.TweetCreate
+)
+def create_tweet(
+    tweet: schemas.TweetCreate,
+):
+    new_tweet = models.Tweet(**tweet.dict())
+    db.session.add(new_tweet)
+    db.session.commit()
+    db.session.refresh(new_tweet)
+    return new_tweet
