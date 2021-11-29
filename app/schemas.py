@@ -21,7 +21,6 @@ class User(BaseModel):
     class Config:
         orm_mode = True
 
-
 class TweetBase(BaseModel):
     title: str
     content: str
@@ -33,3 +32,8 @@ class TweetBase(BaseModel):
 
 class TweetCreate(TweetBase):
     pass
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
