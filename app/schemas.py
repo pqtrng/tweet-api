@@ -4,6 +4,24 @@ from datetime import datetime
 from pydantic.types import conint
 
 
+class UserBase(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class UserCreate(UserBase):
+    pass
+
+
+class User(BaseModel):
+    id: int
+    email: EmailStr
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
 class TweetBase(BaseModel):
     title: str
     content: str
