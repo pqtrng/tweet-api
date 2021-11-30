@@ -15,9 +15,9 @@ def create_user(
 ):
     user.password = utils.hash(user.password)
     new_user = models.User(**user.dict())
-    db.session.add(new_user)
-    db.session.commit()
-    db.session.refresh(new_user)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
     return new_user
 
 

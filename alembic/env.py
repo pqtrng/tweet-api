@@ -9,7 +9,7 @@ from app import models
 from app.config import settings
 
 config = context.config
-config.set_main_option("sqlalchemy.url", settings.get_url())
+config.set_main_option("sqlalchemy.url", settings.get_alembic_url())
 
 fileConfig(config.config_file_name)
 

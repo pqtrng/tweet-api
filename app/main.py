@@ -1,6 +1,11 @@
 from fastapi import FastAPI
 from .routers import tweet, user, auth
 
+from . import models, database
+
+# Connect to database
+models.Base.metadata.create_all(bind=database.engine)
+
 # App
 app = FastAPI()
 

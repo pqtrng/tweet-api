@@ -46,7 +46,6 @@ def create_tweet(
     current_user: schemas.User = Depends(oauth2.get_current_user),
     db: Session = Depends(database.get_db),
 ):
-    print(current_user)
     new_tweet = models.Tweet(owner_id=current_user.id, **tweet.dict())
     db.add(new_tweet)
     db.commit()

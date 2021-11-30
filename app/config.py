@@ -18,8 +18,18 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
 
-    def get_url(self):
+    def get_alembic_url(self):
         return f"{self.database_type}+{self.database_driver}://{quote(self.database_username)}:{quote(self.database_password)}@{self.database_hostname}:{self.database_port}/{self.database_name}".replace(
+            "%", "%%"
+        )
+
+    def get_url(self):
+        return f"{self.database_type}://{quote(self.database_username)}:{quote(self.database_password)}@{self.database_hostname}:{self.database_port}/{self.database_name}".replace(
+            "%", "%%"
+        )
+
+    def get_test_url(self):
+        return f"{self.database_type}://{quote(self.database_username)}:{quote(self.database_password)}@{self.database_hostname}:{self.database_port}/{self.database_name}_test".replace(
             "%", "%%"
         )
 
