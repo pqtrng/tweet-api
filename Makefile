@@ -31,4 +31,7 @@ log:
 	docker logs $(BACKEND_CONTAINER_NAME) -f
 
 bash:
-	docker exec -it $(BACKEND_CONTAINER_NAME) bash 
+	docker exec -it $(BACKEND_CONTAINER_NAME) bash
+
+test:
+	pytest -v -s --disable-warnings -x

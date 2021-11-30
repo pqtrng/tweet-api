@@ -1,8 +1,8 @@
 from fastapi import Response, status, HTTPException, APIRouter, Depends
-from fastapi_sqlalchemy import db
+from sqlalchemy.orm import Session
 from typing import List, Optional
 
-from .. import models, schemas, oauth2
+from .. import models, schemas, oauth2, database
 
 router = APIRouter(prefix="/tweets", tags=["Tweets"])
 
@@ -12,9 +12,10 @@ def get_tweets(
     limit: int = 10,
     skip: int = 0,
     search: Optional[str] = "",
+    db: Session = Depends(database.get_db),
 ):
     tweets = (
-        db.session.query(models.Tweet)
+        db.query(models.Tweet)
         .group_by(models.Tweet.id)
         .filter(models.Tweet.title.contains(search))
         .limit(limit=limit)
@@ -26,8 +27,8 @@ def get_tweets(
 
 
 @router.get("/{id}", response_model=schemas.TweetBase)
-def get_tweets(id: int):
-    tweet = db.session.query(models.Tweet).filter(models.Tweet.id == id).first()
+def get_tweets(id: int, db: Session = Depends(database.get_db)):
+    tweet = db.query(models.Tweet).filter(models.Tweet.id == id).first()
     if not tweet:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -43,11 +44,13 @@ def get_tweets(id: int):
 def create_tweet(
     tweet: schemas.TweetCreate,
     current_user: schemas.User = Depends(oauth2.get_current_user),
+    db: Session = Depends(database.get_db),
 ):
+    print(current_user)
     new_tweet = models.Tweet(owner_id=current_user.id, **tweet.dict())
-    db.session.add(new_tweet)
-    db.session.commit()
-    db.session.refresh(new_tweet)
+    db.add(new_tweet)
+    db.commit()
+    db.refresh(new_tweet)
     return new_tweet
 
 
@@ -56,8 +59,9 @@ def update_tweet(
     id: int,
     tweet: schemas.TweetCreate,
     current_user: schemas.User = Depends(oauth2.get_current_user),
+    db: Session = Depends(database.get_db),
 ):
-    tweet_query = db.session.query(models.Tweet).filter(models.Tweet.id == id)
+    tweet_query = db.query(models.Tweet).filter(models.Tweet.id == id)
 
     # Check if the tweet exist
     if not tweet_query.first():
@@ -75,16 +79,18 @@ def update_tweet(
 
     # Execute the action
     tweet_query.update(values=tweet.dict(), synchronize_session=False)
-    db.session.commit()
+    db.commit()
 
     return tweet_query.first()
 
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_tweet(
-    id: int, current_user: schemas.User = Depends(oauth2.get_current_user)
+    id: int,
+    current_user: schemas.User = Depends(oauth2.get_current_user),
+    db: Session = Depends(database.get_db),
 ):
-    tweet_query = db.session.query(models.Tweet).filter(models.Tweet.id == id)
+    tweet_query = db.query(models.Tweet).filter(models.Tweet.id == id)
 
     # Check if the tweet exist
     if not tweet_query.first():
@@ -102,6 +108,6 @@ def delete_tweet(
 
     # Execute the action
     tweet_query.delete(synchronize_session=False)
-    db.session.commit()
+    db.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)

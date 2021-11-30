@@ -3,10 +3,13 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
-from . import schemas, database, models
+
+# Local
+from . import schemas, models, database
 from .config import settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+
 
 def create_access_token(data: dict):
     to_encode = data.copy()
@@ -18,6 +21,7 @@ def create_access_token(data: dict):
     )
 
     return encoded_jwt
+
 
 def verify_access_token(token: str, credentials_exception):
     try:
